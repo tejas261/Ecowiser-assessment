@@ -1,4 +1,3 @@
-// import burger from '../assets/interface_15795777.png'
 
 function Navbar() {
   return (

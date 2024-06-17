@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import InputModal from "./Modal";
+import InputModal from "./Modal.jsx";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import {
   getFirestore,
