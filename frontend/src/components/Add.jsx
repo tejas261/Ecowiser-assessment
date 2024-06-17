@@ -169,7 +169,7 @@ function Add() {
       ) : (
         <>
           <div className="grid place-items-center grid-cols-3 grid-rows-2 xs:max-lg:grid-cols-2 xs:max-lg:grid-rows-3 xs:max-lg:m-2 xs:max-md:grid-cols-1 xs:max-md:grid-rows-6 xs:max-md:w-[30rem] m-5 xs:max-md:mx-auto xs:max-xss:w-[20rem] xs:max-xss:mx-auto">
-            {currentNotes.map((note) => (
+            {currentNotes.length==0 ? <h1 className="text-center absolute text-4xl top-60">Have a thought running in your mind? <br /> Save it here before it slips away!👇</h1> :currentNotes.map((note) => (
               <div
                 key={note.id}
                 className="relative bg-yellow-50 p-5 rounded-lg w-96 h-auto xs:max-xss:mx-auto xs:max-xss:w-[16rem] my-20 shadow-md"
