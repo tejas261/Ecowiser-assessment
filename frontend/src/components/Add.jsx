@@ -168,13 +168,13 @@ function Add() {
         </div>
       ) : (
         <>
-          <div className="p-5 grid grid-cols-3 grid-rows-2 xs:max-lg:grid-cols-2 xs:max-lg:grid-rows-3 xs:max-md:grid-cols-1 xs:max-md:grid-rows-6 xs:max-md:w-[30rem] my-5 xs:max-md:mx-auto xs:max-sm:w-[20rem] xs:max-sm:mx-auto">
+          <div className="grid place-items-center grid-cols-3 grid-rows-2 xs:max-lg:grid-cols-2 xs:max-lg:grid-rows-3 xs:max-lg:m-2 xs:max-md:grid-cols-1 xs:max-md:grid-rows-6 xs:max-md:w-[30rem] m-5 xs:max-md:mx-auto xs:max-xss:w-[20rem] xs:max-xss:mx-auto">
             {currentNotes.map((note) => (
               <div
                 key={note.id}
-                className="relative bg-yellow-100 p-5 m-5 rounded-lg shadow-md"
+                className="relative bg-yellow-50 p-5 rounded-lg w-96 h-auto xs:max-xss:mx-auto xs:max-xss:w-[16rem] my-20 shadow-md"
               >
-                <h2 className="text-xl font-bold mb-2">{note.title}</h2>
+                <h2 className="text-xl mt-5 font-bold mb-2">{note.title}</h2>
                 <p className="text-gray-600">{note.tagline}</p>
                 <p className="mt-4">{note.description}</p>
                 <div className="absolute top-0 right-0 m-3 flex space-x-2">
@@ -192,7 +192,7 @@ function Add() {
                   />
                 </div>
                 <button
-                  className="absolute bottom-0 right-0 m-3 text-blue-500"
+                  className="absolute bottom-0 right-0 m-3 text-yellow-900 my-1 font-bold"
                   onClick={() => openModal(note)}
                 >
                   Edit
@@ -208,7 +208,7 @@ function Add() {
                 onClick={() => handlePageClick(number)}
                 className={`mx-1 px-3 py-1 rounded ${
                   number === currentPage
-                    ? "bg-blue-500 text-white"
+                    ? "bg-yellow-300 text-white"
                     : "bg-gray-200"
                 }`}
               >
