@@ -3,7 +3,6 @@ import Modal from "react-modal";
 import { getFirestore, collection, addDoc, doc, updateDoc } from "firebase/firestore";
 import { app } from "../firebase.js";
 import toast from "react-hot-toast";
-import { HashLoader } from "react-spinners";
 
 const firestore = getFirestore(app);
 
@@ -122,9 +121,6 @@ function InputModal({ isOpen, onRequestClose, onSubmit, note }) {
           >
             Submit
           </button>
-        </div>
-        <div>
-          {loading && <HashLoader color="#d2d736" />}
         </div>
       </form>
     </Modal>
