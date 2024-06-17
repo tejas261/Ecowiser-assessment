@@ -15,6 +15,7 @@ import pin from "../assets/pinned.png";
 import bin from "../assets/bin.png";
 import add from "../assets/add.png";
 import unpin from "../assets/unpinned.png";
+import toast from "react-hot-toast";
 
 const firestore = getFirestore(app);
 
@@ -37,6 +38,7 @@ function Add() {
   };
 
   const handleFormSubmit = async (data) => {
+    setLoading(true);
     if (selectedNote) {
       const noteRef = doc(firestore, "notes", selectedNote.id);
       try {
@@ -46,9 +48,10 @@ function Add() {
             note.id === selectedNote.id ? { ...note, ...data } : note
           )
         );
-        closeModal();
+        toast.success("Note updated!");
       } catch (error) {
         console.error("Error updating document: ", error);
+        toast.error("Error updating note");
       }
     } else {
       try {
@@ -60,11 +63,14 @@ function Add() {
           ...prevNotes,
           { id: res.id, ...data, pinned: false },
         ]);
-        closeModal();
+        toast.success("Note added!");
       } catch (error) {
         console.error("Error adding document: ", error);
+        toast.error("Error adding note");
       }
     }
+    setLoading(false);
+    closeModal();
   };
 
   const handlePinClick = async (note) => {
@@ -87,8 +93,10 @@ function Add() {
       const noteRef = doc(firestore, "notes", note.id);
       await deleteDoc(noteRef);
       setNotesData((prevNotes) => prevNotes.filter((n) => n.id !== note.id));
+      toast.success("Note deleted!");
     } catch (error) {
       console.error("Error deleting the note: ", error);
+      toast.error("Error deleting note");
     }
   };
 
@@ -104,6 +112,7 @@ function Add() {
         setNotesData(notes);
       } catch (error) {
         console.error("Error fetching data from Firestore:", error);
+        toast.error("Error fetching notes");
       }
       setLoading(false);
     }
@@ -152,79 +161,77 @@ function Add() {
             <div className="m-20 xs:max-sm:w-[13rem] xs:max-sm:mx-auto rounded-xl w-80 h-auto">
               <Skeleton className="m-1" count={3} />
             </div>
-            <div className="m-20 rounded-xl w-80 h-auto xs:max-sm:w-[13rem] xs:max-sm:mx-auto">
+            <div className="m-20 xs:max-sm:w-[13rem] xs:max-sm:mx-auto rounded-xl w-80 h-auto">
               <Skeleton className="m-1" count={3} />
             </div>
           </SkeletonTheme>
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-3 grid-rows-2 xs:max-lg:grid-cols-2 xs:max-lg:grid-rows-3 xs:max-md:grid-cols-1 xs:max-md:grid-rows-6 xs:max-md:w-[30rem] my-5 xs:max-md:mx-auto xs:max-sm:w-[20rem] xs:max-sm:mx-auto ">
-            {currentNotes.length == 0 ? (
-              <h1 className="text-center mx-auto absolute left-[45vw] py-10 text-3xl">
-                No notes found!!
-              </h1>
-            ) : (
-              currentNotes.map((note) => (
-                <div
-                  className="group m-20 border-2 rounded-xl w-80 h-auto"
-                  key={note.id}
-                >
-                  <button
-                    onClick={() => handleDelete(note)}
-                    className="group-hover:block hidden transition ease-in-out duration-150 relative w-10 m-2 left-[90%]"
-                  >
-                    <img width={15} src={bin} alt="" />
-                  </button>
-                  <h1 className="text-3xl p-3" onClick={() => openModal(note)}>
-                    {note.title}
-                  </h1>
-                  <h3 className="text-xl px-5">{note.tagline}</h3>
-                  <p className="p-4 px-5">{note.description}</p>
-                  <button
+          <div className="p-5 grid grid-cols-3 grid-rows-2 xs:max-lg:grid-cols-2 xs:max-lg:grid-rows-3 xs:max-md:grid-cols-1 xs:max-md:grid-rows-6 xs:max-md:w-[30rem] my-5 xs:max-md:mx-auto xs:max-sm:w-[20rem] xs:max-sm:mx-auto">
+            {currentNotes.map((note) => (
+              <div
+                key={note.id}
+                className="relative bg-yellow-100 p-5 m-5 rounded-lg shadow-md"
+              >
+                <h2 className="text-xl font-bold mb-2">{note.title}</h2>
+                <p className="text-gray-600">{note.tagline}</p>
+                <p className="mt-4">{note.description}</p>
+                <div className="absolute top-0 right-0 m-3 flex space-x-2">
+                  <img
+                    src={note.pinned ? pin : unpin}
+                    alt="Pin"
+                    className="w-6 h-6 cursor-pointer"
                     onClick={() => handlePinClick(note)}
-                    className={`py-2 px-4 transition ease-in-out duration-150 relative bottom-0 rounded ${
-                      note.pinned ? "block" : "hidden"
-                    } group-hover:block`}
-                  >
-                    <img
-                      width={15}
-                      src={note.pinned ? pin : unpin}
-                      alt={note.pinned ? "Unpin" : "Pin"}
-                    />
-                  </button>
+                  />
+                  <img
+                    src={bin}
+                    alt="Delete"
+                    className="w-6 h-6 cursor-pointer"
+                    onClick={() => handleDelete(note)}
+                  />
                 </div>
-              ))
-            )}
+                <button
+                  className="absolute bottom-0 right-0 m-3 text-blue-500"
+                  onClick={() => openModal(note)}
+                >
+                  Edit
+                </button>
+              </div>
+            ))}
           </div>
 
-          <div className="flex justify-center my-4">
-            {pageNumbers.map((pageNumber) => (
+          <div className="flex justify-center mt-4">
+            {pageNumbers.map((number) => (
               <button
-                key={pageNumber}
-                onClick={() => handlePageClick(pageNumber)}
-                className={`px-4 py-2 mx-1 bg-gray-300 rounded ${
-                  currentPage === pageNumber ? "bg-yellow-300 text-white" : ""
+                key={number}
+                onClick={() => handlePageClick(number)}
+                className={`mx-1 px-3 py-1 rounded ${
+                  number === currentPage
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200"
                 }`}
               >
-                {pageNumber}
+                {number}
               </button>
             ))}
           </div>
         </>
       )}
 
-      <div className="w-20 h-20 bg-yellow-300 fixed left-[90%] bottom-[5%] my-2 rounded-[5rem] justify-center items-center flex xs:max-md:relative md:max-lg:translate-x-[-5rem] xs:max-md:translate-x-[-5rem]">
-        <button onClick={() => openModal(null)} className="xs:max-md:w-20">
-          <img src={add} className="xs:max-md:ml-6" width={30} alt="Add" />
-        </button>
-        <InputModal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          onSubmit={handleFormSubmit}
-          note={selectedNote}
-        />
-      </div>
+      <button
+        className="fixed bottom-10 right-10 bg-yellow-300 text-white rounded-full p-5 shadow-lg hover:bg-yellow-500"
+        onClick={() => openModal(null)}
+      >
+        <img src={add} alt="Add" className="w-8 h-8" />
+      </button>
+
+      <InputModal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        onSubmit={handleFormSubmit}
+        note={selectedNote}
+      />
     </>
   );
 }
